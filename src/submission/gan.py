@@ -21,6 +21,8 @@ def loss_nonsaturating_d(g, d, x_real, *, device):
     # You may find some or all of the below useful:
     #   - F.binary_cross_entropy_with_logits
     ### START CODE HERE ###
+    d_loss = -1./batch_size * (F.logsigmoid(d(x_real)).sum() + torch.log(1. - torch.sigmoid(d(g(z)))).sum())
+    return d_loss
     ### END CODE HERE ###
     raise NotImplementedError
 
@@ -43,6 +45,8 @@ def loss_nonsaturating_g(g, d, x_real, *, device):
     # You may find some or all of the below useful:
     #   - F.logsigmoid
     ### START CODE HERE ###
+    g_loss = -1./batch_size * F.logsigmoid(d(g(z))).sum()
+    return g_loss
     ### END CODE HERE ###
     raise NotImplementedError
 
