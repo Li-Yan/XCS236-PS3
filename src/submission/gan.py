@@ -69,6 +69,8 @@ def conditional_loss_nonsaturating_d(g, d, x_real, y_real, *, device):
     d_loss = None
 
     ### START CODE HERE ###
+    d_loss = -1./batch_size * (F.logsigmoid(d(x_real, y_real)).sum() + torch.log(1. - torch.sigmoid(d( g(z, y_real), y_real ))).sum())
+    return d_loss
     ### END CODE HERE ###
     raise NotImplementedError
 
@@ -91,6 +93,8 @@ def conditional_loss_nonsaturating_g(g, d, x_real, y_real, *, device):
     g_loss = None
 
     ### START CODE HERE ###
+    g_loss = -1./batch_size * F.logsigmoid(d(g(z, y_real), y_real)).sum()
+    return g_loss
     ### END CODE HERE ###
     raise NotImplementedError
 
