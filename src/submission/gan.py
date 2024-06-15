@@ -127,8 +127,6 @@ def loss_wasserstein_gp_d(g, d, x_real, *, device):
     d_loss = d(g(z)) - d(x_real)
     d_loss = d_loss + 10. * (grad_norms - 1.)**2
     d_loss = d_loss.mean()
-
-    g_loss = -1. * d(g(z)).mean()
     return d_loss
     ### END CODE HERE ###
     raise NotImplementedError
@@ -151,15 +149,6 @@ def loss_wasserstein_gp_g(g, d, x_real, *, device):
     g_loss = None
     
     ### START CODE HERE ###
-    alpha = torch.rand(batch_size, 1, 1, 1)
-    rx = alpha * g(z) + (1. - alpha) * x_real
-    rx_grad = torch.autograd.grad(d(rx).sum(), rx, create_graph=True)
-    grad_norms = (rx_grad[0]**2).sum(dim=(1,2,3)).sqrt()
-
-    d_loss = d(g(z)) - d(x_real)
-    d_loss = d_loss + 10. * (grad_norms - 1.)**2
-    d_loss = d_loss.mean()
-
     g_loss = -1. * d(g(z)).mean()
     return g_loss
     ### END CODE HERE ###
