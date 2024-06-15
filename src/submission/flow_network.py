@@ -93,6 +93,18 @@ class MADE(nn.Module):
         x = torch.zeros_like(z)
         log_det = None
         ### START CODE HERE ### 
+        for i in range(self.input_size):
+            # Pass through the network to get mu and alpha (log std) for each dimension
+            h = self.net(x)
+            mu, alpha = h[:, :self.input_size], h[:, self.input_size:]
+
+            # Affine transformation and calculate log_det contribution
+            x[:, i] = mu[:, i] + z[:, i] * torch.exp(alpha[:, i])
+            if log_det == None:
+                log_det = alpha[:, i]
+            else:
+                log_det += alpha[:, i]
+        return x, log_det
         ### END CODE HERE ###
         raise NotImplementedError
 
@@ -104,6 +116,19 @@ class MADE(nn.Module):
         """
         z, log_det = None, None
         ### START CODE HERE ###
+        z = torch.zeros_like(x)
+        for i in range(self.input_size):
+            # Pass through the network to get mu and alpha (log std) for each dimension
+            h = self.net(x)
+            mu, alpha = h[:, :self.input_size], h[:, self.input_size:]
+
+            # Inverse affine transformation and calculate log_det contribution
+            z[:, i] = (x[:, i] - mu[:, i]) * torch.exp(-alpha[:, i])
+            if log_det == None:
+                log_det = -alpha[:, i]
+            else:
+                log_det -= alpha[:, i]
+        return z, log_det
         ### END CODE HERE ###
         raise NotImplementedError
 
